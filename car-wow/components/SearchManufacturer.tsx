@@ -1,8 +1,9 @@
 "use client";
-import { Combobox, ComboboxInput, Transition } from "@headlessui/react"
+
+import { Combobox, ComboboxButton,ComboboxInput, ComboboxOptions, ComboboxOption } from "@headlessui/react"
 import { SearchManufacturerProps } from "@/types"
 import { manufacturers } from "@/constants";
-import { useState, Fragment } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 const SearchManufacturer = ({manufacturer , setManufacturer} : SearchManufacturerProps) => {
@@ -20,84 +21,58 @@ const SearchManufacturer = ({manufacturer , setManufacturer} : SearchManufacture
 
   return (
     <div className="search-manufacturer">
-        <Combobox value={manufacturer} onChange={setManufacturer}>
-            {/* <div className="flex w-full search-manufacturer__input">
-                <Image
-                    src="/car-logo.svg"
-                    width={20}
-                    height={20}
-                    alt="Car Logo" 
-                />
-               <ComboboxInput
-                    className="bg-transparent ml-2"
-                    placeholder="Volkswagen"
-                    displayValue={(manufacturer: string) => manufacturer}
-                    onChange={(e) => setQuery(e.target.value)}
-                >
-               </ComboboxInput>
-            </div> */}
+        <Combobox value={manufacturer} onChange={setManufacturer} onClose={() => setQuery("")}>
             <div className="relative w-full">
-                <Combobox.Button className="absolute top-[14px] left-4">
+                <ComboboxButton className="absolute top-[14px] left-4">
                     <Image
                         src="/car-logo.svg"
                         width={20}
                         height={20}
                         alt="Car Logo" 
                     />
-                </Combobox.Button >
+                </ComboboxButton >
                 <ComboboxInput
                     className="search-manufacturer__input"
                     placeholder="Volkswagen"
+                    aria-label="Search Manufacturer"
                     displayValue={(manufacturer: string) => manufacturer}
                     onChange={(e) => setQuery(e.target.value)}
                 >
             </ComboboxInput>
-            <Transition
-                as={Fragment} 
-                leave="transition ease-in duration-100"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-                afterLeave={() => setQuery("")}
-            >
-                <Combobox.Options>
-                    {
-                            filteredManufacturers.map((manufacturer) => (
-                                <Combobox.Option 
-                                    key={manufacturer}
-                                    className={({active}) =>`relative search-manufacturer__option
-                                    ${active ?
-                                        'bg-primary-blue text-white'
-                                        : 'text-gray-900'
-                                    }
-                                    `}
-                                    value={manufacturer}>
-                                    {({ selected, active }) =>(
-                                        <>
-                                            <span
-                                                className={`block truncate 
-                                                    ${selected ? 'font-medium' : 'font-normal'}
-                                                    `}>
-                                                    {manufacturer}
-                                            </span>
+                <ComboboxOptions
+                    transition
+                    className="transition ease-in duration-100 opacity-100 empty:invisible data-[closed]:scale-95 data-[closed]:opacity-0"
+                >
+                    {filteredManufacturers.map((manufacturer: string) => (
+                        <ComboboxOption 
+                            key={manufacturer}
+                            className="relative search-manufacturer__option data-[focus]:bg-primary-blue data-[focus]:text-white"
+                            value={manufacturer}>
+                                {({ selected, focus}) =>(
+                                    <>
+                                        <span
+                                            className={`block truncate 
+                                                ${selected ? 'font-medium' : 'font-normal'}
+                                                `}>
+                                                {manufacturer}
+                                        </span>
                                             {selected ? (
                                                 <span
                                                     className={`absolute inset-y-0 right-0 flex items-center pl-3
-                                                        ${active ? 'text-white'
+                                                        ${focus ? 'text-white'
                                                             : 'text-teal-600'
                                                         }`}
                                                 >
                                                 </span>
                                             ): null}                                        
-                                        </>
+                                    </>
                                     )}
-                                    </Combobox.Option>
-                            )
+                        </ComboboxOption>
+                    )
                         )
 
                     }
-                </Combobox.Options>
-
-            </Transition>
+                </ComboboxOptions>
             </div>
         </Combobox>
     </div>
